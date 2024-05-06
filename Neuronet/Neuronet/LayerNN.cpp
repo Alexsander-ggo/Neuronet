@@ -1,7 +1,5 @@
 #include "LayerNN.h"
 
-#include <QDebug>
-
 LayerNN::LayerNN()
 {
     mSignals = nullptr;
