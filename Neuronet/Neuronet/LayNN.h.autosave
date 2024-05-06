@@ -1,0 +1,51 @@
+﻿#ifndef LAYNN_H
+#define LAYNN_H
+
+class LayNN
+{
+public:
+    LayNN(int inputsCount, int outputsCount,
+          float (*activation) (float), float learnRate = 0.1);
+
+    ~LayNN();
+
+    int getInputsCount() const;
+
+    int getOutputsCount() const;
+
+    void setLearnRate(float learnRate);
+
+    float* getSignals();
+    
+    float* getResults();
+
+    float* getErrors();
+
+    float* getWeights();
+
+    float randomWeight(float mult, float offset) const;
+
+    float derivateActivation(float value) const;
+    
+    float* getWeight(int indexInput, int indexOutput);
+
+    void updateWeights(float* enteredValue);
+
+    void calculateResults(float* inputs);
+
+    void calculateOutputError(float* targets);
+
+    void calculateHiddenError(LayNN* nextLayNN);
+
+private:
+    int mInputsCount;
+    int mOutputsCount;
+    float mLearnRate;
+    float (*mActivation) (float);
+    float* mSignals;
+    float* mResults;
+    float* mErrors;
+    float* mWeights;
+};
+
+#endif // LAYNN_H
