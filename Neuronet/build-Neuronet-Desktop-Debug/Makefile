@@ -14,10 +14,10 @@ EQ            = =
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_QML_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_QML_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -g -std=gnu++1z -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I../Neuronet -I. -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
+INCPATH       = -I../Neuronet -I. -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtPrintSupport -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 QMAKE         = /usr/lib/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -40,7 +40,7 @@ DISTNAME      = Neuronet1.0.0
 DISTDIR = /home/alexsander/C++/DZ/Neuronet/build-Neuronet-Desktop-Debug/.tmp/Neuronet1.0.0
 LINK          = g++
 LFLAGS        = 
-LIBS          = $(SUBLIBS) /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so /usr/lib/x86_64-linux-gnu/libGL.so -lpthread   
+LIBS          = $(SUBLIBS) /usr/lib/x86_64-linux-gnu/libQt5PrintSupport.so /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so /usr/lib/x86_64-linux-gnu/libGL.so -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -52,12 +52,19 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../Neuronet/LayerNN.cpp \
+SOURCES       = ../Neuronet/Form.cpp \
+		../Neuronet/LayerNN.cpp \
 		../Neuronet/Neuronet.cpp \
-		../Neuronet/main.cpp 
-OBJECTS       = LayerNN.o \
+		../Neuronet/main.cpp \
+		../Neuronet/qcustomplot.cpp moc_Form.cpp \
+		moc_qcustomplot.cpp
+OBJECTS       = Form.o \
+		LayerNN.o \
 		Neuronet.o \
-		main.o
+		main.o \
+		qcustomplot.o \
+		moc_Form.o \
+		moc_qcustomplot.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -148,6 +155,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resources.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/moc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/opengl.prf \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/uic.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/thread.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qmake_use.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/file_copies.prf \
@@ -155,10 +163,14 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		../Neuronet/Neuronet.pro ../Neuronet/LayerNN.h \
-		../Neuronet/Neuronet.h ../Neuronet/LayerNN.cpp \
+		../Neuronet/Neuronet.pro ../Neuronet/Form.h \
+		../Neuronet/LayerNN.h \
+		../Neuronet/Neuronet.h \
+		../Neuronet/qcustomplot.h ../Neuronet/Form.cpp \
+		../Neuronet/LayerNN.cpp \
 		../Neuronet/Neuronet.cpp \
-		../Neuronet/main.cpp
+		../Neuronet/main.cpp \
+		../Neuronet/qcustomplot.cpp
 QMAKE_TARGET  = Neuronet
 DESTDIR       = 
 TARGET        = Neuronet
@@ -167,7 +179,7 @@ TARGET        = Neuronet
 first: all
 ####### Build rules
 
-Neuronet:  $(OBJECTS)  
+Neuronet: ui_Form.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: ../Neuronet/Neuronet.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -260,6 +272,7 @@ Makefile: ../Neuronet/Neuronet.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resources.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/moc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/opengl.prf \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/uic.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/thread.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qmake_use.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/file_copies.prf \
@@ -359,6 +372,7 @@ Makefile: ../Neuronet/Neuronet.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/resources.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/moc.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/opengl.prf:
+/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/uic.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/unix/thread.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qmake_use.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/file_copies.prf:
@@ -382,8 +396,9 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../Neuronet/LayerNN.h ../Neuronet/Neuronet.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../Neuronet/LayerNN.cpp ../Neuronet/Neuronet.cpp ../Neuronet/main.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../Neuronet/Form.h ../Neuronet/LayerNN.h ../Neuronet/Neuronet.h ../Neuronet/qcustomplot.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../Neuronet/Form.cpp ../Neuronet/LayerNN.cpp ../Neuronet/Neuronet.cpp ../Neuronet/main.cpp ../Neuronet/qcustomplot.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../Neuronet/Form.ui $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -415,21 +430,50 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -g -std=gnu++1z -Wall -W -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all:
+compiler_moc_header_make_all: moc_Form.cpp moc_qcustomplot.cpp
 compiler_moc_header_clean:
+	-$(DEL_FILE) moc_Form.cpp moc_qcustomplot.cpp
+moc_Form.cpp: ../Neuronet/Form.h \
+		../Neuronet/Neuronet.h \
+		../Neuronet/LayerNN.h \
+		../Neuronet/qcustomplot.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/alexsander/C++/DZ/Neuronet/build-Neuronet-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/alexsander/C++/DZ/Neuronet/Neuronet -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../Neuronet/Form.h -o moc_Form.cpp
+
+moc_qcustomplot.cpp: ../Neuronet/qcustomplot.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/alexsander/C++/DZ/Neuronet/build-Neuronet-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/alexsander/C++/DZ/Neuronet/Neuronet -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../Neuronet/qcustomplot.h -o moc_qcustomplot.cpp
+
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
+compiler_uic_make_all: ui_Form.h
+compiler_uic_clean:
+	-$(DEL_FILE) ui_Form.h
+ui_Form.h: ../Neuronet/Form.ui \
+		/usr/lib/qt5/bin/uic \
+		../Neuronet/qcustomplot.h
+	/usr/lib/qt5/bin/uic ../Neuronet/Form.ui -o ui_Form.h
+
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
 compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean 
+compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
+
+Form.o: ../Neuronet/Form.cpp ../Neuronet/Form.h \
+		../Neuronet/Neuronet.h \
+		../Neuronet/LayerNN.h \
+		../Neuronet/qcustomplot.h \
+		ui_Form.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Form.o ../Neuronet/Form.cpp
 
 LayerNN.o: ../Neuronet/LayerNN.cpp ../Neuronet/LayerNN.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o LayerNN.o ../Neuronet/LayerNN.cpp
@@ -438,9 +482,20 @@ Neuronet.o: ../Neuronet/Neuronet.cpp ../Neuronet/Neuronet.h \
 		../Neuronet/LayerNN.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Neuronet.o ../Neuronet/Neuronet.cpp
 
-main.o: ../Neuronet/main.cpp ../Neuronet/Neuronet.h \
-		../Neuronet/LayerNN.h
+main.o: ../Neuronet/main.cpp ../Neuronet/Form.h \
+		../Neuronet/Neuronet.h \
+		../Neuronet/LayerNN.h \
+		../Neuronet/qcustomplot.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../Neuronet/main.cpp
+
+qcustomplot.o: ../Neuronet/qcustomplot.cpp ../Neuronet/qcustomplot.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qcustomplot.o ../Neuronet/qcustomplot.cpp
+
+moc_Form.o: moc_Form.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_Form.o moc_Form.cpp
+
+moc_qcustomplot.o: moc_qcustomplot.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_qcustomplot.o moc_qcustomplot.cpp
 
 ####### Install
 
